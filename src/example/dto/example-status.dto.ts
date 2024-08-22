@@ -6,12 +6,10 @@
   Class-validator works on both browser and node.js platforms.
 */
 
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum } from 'class-validator';
+import { ExampleStatus } from '../example.model';
 
-export class CreateTaskDTO {
-  @IsNotEmpty()
-  title: string;
-
-  @IsNotEmpty()
-  description: string;
+export class StatusDTO {
+  @IsEnum(ExampleStatus)
+  status: ExampleStatus;
 }
