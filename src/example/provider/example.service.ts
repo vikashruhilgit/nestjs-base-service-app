@@ -97,7 +97,7 @@ export class ExampleService {
     return example;
   }
 
-  async update(
+  /* async update(
     id: string,
     updateExampleDTO: CreateExampleDTO,
   ): Promise<Example> {
@@ -108,7 +108,7 @@ export class ExampleService {
     };
     example = await this.exampleRepository.save(example);
     return example;
-  }
+  } */
 
   async patch(id: string, updateExampleDTO: PatchExampleDTO): Promise<Example> {
     let example = await this.findByID(id);

@@ -38,12 +38,6 @@ export class CreateExampleDTO {
 
   @IsEnum(ExampleStatus)
   status: ExampleStatus = ExampleStatus.OPEN;
-
-  @IsOptional()
-  created_at: Date;
-
-  @IsOptional()
-  updated_at: Date;
 }
 
 /**

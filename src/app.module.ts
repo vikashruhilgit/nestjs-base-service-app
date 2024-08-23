@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ExampleModule } from './example/example.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { Example } from './example/example.entity';
 
 @Module({
   imports: [
@@ -11,7 +10,8 @@ import { Example } from './example/example.entity';
       inject: [],
       useFactory: () => ({
         type: 'postgres',
-        entities: [Example],
+        // entities: [Example],
+        autoLoadEntities: true,
         synchronize: true,
         username: 'postgres',
         password: 'postgres',

@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Put,
+  // Put,
   Query,
 } from '@nestjs/common';
 import { ExampleService } from './provider/example.service';
@@ -77,11 +77,11 @@ export class ExampleController {
     return this.exampleService.patch(exampleIdDTO.id, patchExampleDTO);
   }
 
-  @Put('/:id')
+  /* @Put('/:id')
   update(
     @Param() exampleIdDTO: ExampleIdDTO,
     @Body() updateTaskDTO: CreateExampleDTO,
-  ): Promise<Example> {
+  ): Example {
     return this.exampleService.update(exampleIdDTO.id, updateTaskDTO);
-  }
+  } */
 }

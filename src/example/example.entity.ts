@@ -6,6 +6,10 @@
  * https://typeorm.io/
  *
  * https://github.com/typeorm/typeorm/blob/master/docs/active-record-data-mapper.md
+ *
+ * For One to one relation use - @OneToOne decorator and @JoinColumn to add reference to the table
+ * where you add @JoinColumn id will be added to that table.
+ * In @OneToOne use reference entity and cascade flag for auto CRED operations.
  */
 
 import {
