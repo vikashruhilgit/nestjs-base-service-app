@@ -8,11 +8,18 @@
  * https://github.com/typeorm/typeorm/blob/master/docs/active-record-data-mapper.md
  */
 
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ExampleStatus } from './example.model';
+import { NestedDetailDTO } from './dto/nestedDetail.dto';
 
 @Entity()
-export class Task {
+export class Example {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,6 +29,26 @@ export class Task {
   @Column()
   description: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: ExampleStatus,
+    nullable: false,
+    default: ExampleStatus.OPEN,
+  })
   status: ExampleStatus;
+
+  @Column({
+    type: 'json',
+    nullable: true,
+  })
+  nestedDetail: NestedDetailDTO[];
+
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: new Date(),
+  })
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

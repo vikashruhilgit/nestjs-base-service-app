@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ExampleService } from './provider/example.service';
-import { Example } from './example.model';
+import { Example } from './example.entity';
 import { CreateExampleDTO } from './dto/create-example.dto';
 import { FilterExampleDTO } from './dto/filter-example.dto';
 import { StatusDTO } from './dto/example-status.dto';
@@ -39,7 +39,7 @@ export class ExampleController {
     status: 200,
   })
   @Get()
-  findAll(@Query() filters: FilterExampleDTO): Example[] {
+  findAll(@Query() filters: FilterExampleDTO): Promise<Example[]> {
     if (Object.keys(filters).length > 0) {
       return this.exampleService.findAllWithFilters(filters);
     }
@@ -47,7 +47,7 @@ export class ExampleController {
   }
 
   @Get('/:id')
-  getByID(@Param() exampleIdDTO: ExampleIdDTO): Example {
+  getByID(@Param() exampleIdDTO: ExampleIdDTO): Promise<Example> {
     return this.exampleService.findByID(exampleIdDTO.id);
   }
 
@@ -57,7 +57,7 @@ export class ExampleController {
   }
 
   @Post()
-  create(@Body() createTaskDTO: CreateExampleDTO): Example {
+  create(@Body() createTaskDTO: CreateExampleDTO): Promise<Example> {
     return this.exampleService.create(createTaskDTO);
   }
 
@@ -65,7 +65,7 @@ export class ExampleController {
   updateStatus(
     @Param() exampleIdDTO: ExampleIdDTO,
     @Param('status') statusDTO: StatusDTO,
-  ): Example {
+  ): Promise<Example> {
     return this.exampleService.updateStatus(exampleIdDTO.id, statusDTO);
   }
 
@@ -73,7 +73,7 @@ export class ExampleController {
   patch(
     @Param() exampleIdDTO: ExampleIdDTO,
     @Body() patchExampleDTO: PatchExampleDTO,
-  ): Example {
+  ): Promise<Example> {
     return this.exampleService.patch(exampleIdDTO.id, patchExampleDTO);
   }
 
@@ -81,7 +81,7 @@ export class ExampleController {
   update(
     @Param() exampleIdDTO: ExampleIdDTO,
     @Body() updateTaskDTO: CreateExampleDTO,
-  ): Example {
+  ): Promise<Example> {
     return this.exampleService.update(exampleIdDTO.id, updateTaskDTO);
   }
 }

@@ -1,8 +1,8 @@
 /*
  * Type of dependency injection -
- * inter-modular injection
- * inner-module dependency
- * circular dependency
+ *  inter-modular injection
+ *  inner-module dependency
+ *  circular dependency
  */
 
 import {
@@ -11,13 +11,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Example, ExampleStatus } from '../example.model';
-import { randomUUID } from 'crypto';
 import { CreateExampleDTO } from '../dto/create-example.dto';
 import { FilterExampleDTO } from '../dto/filter-example.dto';
 import { StatusDTO } from '../dto/example-status.dto';
 import { PatchExampleDTO } from '../dto/patch-example.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { Like, Repository } from 'typeorm';
+import { Example } from '../example.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ExampleService {
@@ -26,20 +27,27 @@ export class ExampleService {
   constructor(
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    @InjectRepository(Example)
+    private readonly exampleRepository: Repository<Example>,
   ) {}
 
-  findAll(): Example[] {
-    console.log('helllo');
-
+  async findAll(): Promise<Example[]> {
     if (this.authService.isAuthenticated()) {
-      return this.examples;
+      return await this.exampleRepository.find();
     }
     throw new Error('User in not authenticated');
   }
 
-  findAllWithFilters(filters: FilterExampleDTO) {
+  async findAllWithFilters(filters: FilterExampleDTO) {
     const { search, status } = filters;
-    let examples = this.findAll();
+
+    let examples = await this.exampleRepository.find({
+      where: {
+        status: status,
+        title: search ? Like(`%${search}%`) : undefined,
+        description: search ? Like(`%${search}%`) : undefined,
+      },
+    });
 
     if (status) {
       examples = examples.filter((Example) => Example.status === status);
@@ -55,8 +63,12 @@ export class ExampleService {
     return examples;
   }
 
-  findByID(id: string): Example {
-    const example = this.examples.find((Example) => Example.id === id);
+  async findByID(id: string): Promise<Example> {
+    const example = await this.exampleRepository.findOne({
+      where: {
+        id,
+      },
+    });
     if (!example) {
       throw new NotFoundException(`Example with Id: ${id} is not found`);
     }
@@ -71,44 +83,40 @@ export class ExampleService {
     this.examples = examples;
   }
 
-  create(createExampleDTO: CreateExampleDTO): Example {
-    const { title, description } = createExampleDTO;
-    const example = {
-      id: randomUUID(),
-      title,
-      description,
-      status: ExampleStatus.OPEN,
-    };
-    this.examples.push(example);
-    return example;
+  public async create(createExampleDTO: CreateExampleDTO): Promise<Example> {
+    let newExample = this.exampleRepository.create(createExampleDTO);
+    newExample = await this.exampleRepository.save<Example>(newExample);
+    return newExample;
   }
 
-  updateStatus(id: string, statusDTO: StatusDTO): Example {
+  async updateStatus(id: string, statusDTO: StatusDTO): Promise<Example> {
     const { status } = statusDTO;
-    const example = this.findByID(id);
+    let example = await this.findByID(id);
     example.status = status;
+    example = await this.exampleRepository.save(example);
     return example;
   }
 
-  update(id: string, updateExampleDTO: CreateExampleDTO): Example {
-    const example = this.findByID(id);
-    const updateExample = {
+  async update(
+    id: string,
+    updateExampleDTO: CreateExampleDTO,
+  ): Promise<Example> {
+    let example = await this.findByID(id);
+    example = {
       id: example.id,
       ...updateExampleDTO,
     };
-    this.deleteByID(id);
-    this.examples.push(updateExample);
-    return updateExample;
+    example = await this.exampleRepository.save(example);
+    return example;
   }
 
-  patch(id: string, updateExampleDTO: PatchExampleDTO): Example {
-    const example = this.findByID(id);
-    const updateExample = {
+  async patch(id: string, updateExampleDTO: PatchExampleDTO): Promise<Example> {
+    let example = await this.findByID(id);
+    example = {
       ...example,
       ...updateExampleDTO,
     };
-    this.deleteByID(id);
-    this.examples.push(updateExample);
-    return updateExample;
+    example = await this.exampleRepository.save(example);
+    return example;
   }
 }
