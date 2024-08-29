@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { ExampleService } from 'src/example/provider/example.service';
+import { ExampleService } from '../example/provider/example.service';
 
 @Injectable()
 export class AuthService {

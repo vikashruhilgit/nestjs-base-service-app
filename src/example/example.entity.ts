@@ -9,7 +9,13 @@
  *
  * For One to one relation use - @OneToOne decorator and @JoinColumn to add reference to the table
  * where you add @JoinColumn id will be added to that table.
- * In @OneToOne use reference entity and cascade flag for auto CRED operations.
+ * In @OneToOne use reference entity
+ * "cascade" flag will create reference table record with parent.
+ * "eager" flag will read reference table record with parent.
+ *
+ * or with repository service find method by using 'relations'
+ *
+ * Learn more about uni directional and by directional relation.
  */
 
 import {
@@ -27,7 +33,10 @@ export class Example {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({
+    unique: true,
+    nullable: false,
+  })
   title: string;
 
   @Column()
