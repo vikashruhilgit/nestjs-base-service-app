@@ -8,9 +8,10 @@
 
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 import { ExampleStatus } from '../example.model';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional, IntersectionType } from '@nestjs/swagger';
+import { PaginationQueryDTO } from 'src/common/pagination/dtos/pagination-query.dto';
 
-export class FilterExampleDTO {
+export class FilterExampleBaseDTO {
   @ApiPropertyOptional({
     description: 'status for filter',
     example: '',
@@ -27,18 +28,9 @@ export class FilterExampleDTO {
   @IsOptional()
   @IsNotEmpty()
   search?: string;
-
-  @ApiPropertyOptional({
-    description: 'page no used in pagination',
-    example: 1,
-  })
-  @IsOptional()
-  page?: number;
-
-  @ApiPropertyOptional({
-    description: 'page limit no used in pagination',
-    example: 1,
-  })
-  @IsOptional()
-  limit?: number;
 }
+
+export class FilterExampleDTO extends IntersectionType(
+  FilterExampleBaseDTO,
+  PaginationQueryDTO,
+) {}

@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { appConfig } from './config/app.config';
 import { databaseConfig } from './config/database.config';
+import { PaginationModule } from './common/pagination/pagination.module';
 import envValidation from './config/env.validation';
 
 const env = process.env.NODE_ENV;
@@ -34,6 +35,7 @@ const env = process.env.NODE_ENV;
     }),
     ExampleModule,
     AuthModule,
+    PaginationModule,
   ],
   providers: [],
 })

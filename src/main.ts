@@ -19,6 +19,10 @@ async function bootstrap() {
       whitelist: true, // This will ensure that any additional property which are not defined in DTO are rejected.
       // forbidNonWhitelisted: true, /* This will throw an error if any additional property is sent. */
       transform: true, // this will transform the request object to DTO class.
+      // this is for automatic implicit type conversion eg: string to number or number to string as DTO required.
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 

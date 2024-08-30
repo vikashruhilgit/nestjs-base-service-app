@@ -25,6 +25,7 @@ import { AuthService } from '../../auth/auth.service';
 import { DataSource, Like, Repository } from 'typeorm';
 import { Example } from '../example.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
 // import { ConfigType } from '@nestjs/config';
 // import { exampleConfiguration } from '../config/example.config';
 /**
@@ -37,16 +38,36 @@ export class ExampleService {
   private examples: Example[] = [];
 
   constructor(
+    /**
+     * Injecting auth service with circular dependency
+     */
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    /**
+     * Injecting example repository of type Example entity
+     */
     @InjectRepository(Example)
     private readonly exampleRepository: Repository<Example>,
 
+    /**
+     * injecting dataSource
+     */
     private readonly dataSource: DataSource,
 
-    /* Module specific config with types */
+    /**
+     * Injection Pagination provider
+     */
+    private readonly paginationProvider: PaginationProvider,
+
+    /**
+     * Injecting configuration with type
+     * Module specific config with types
+     */
     // @Inject(exampleConfiguration.KEY)
     // private readonly exampleConfig: ConfigType<typeof exampleConfiguration>,
+    /**
+     * Injecting configuration service
+     */
     // private readonly configService: ConfigService,
   ) {
     // console.log(this.configService.get('APP_TEST_VARIABLE'));
@@ -62,27 +83,21 @@ export class ExampleService {
   }
 
   async findAllWithFilters(filters: FilterExampleDTO) {
-    const { search, status } = filters;
-    // const { search, status, limit, page } = filters;
+    console.log(filters);
 
-    let examples = await this.exampleRepository.find({
-      where: {
-        status: status,
-        title: search ? Like(`%${search}%`) : undefined,
-        description: search ? Like(`%${search}%`) : undefined,
+    const { search, status, limit, page } = filters;
+
+    const examples = await this.paginationProvider.paginateQuery(
+      this.exampleRepository,
+      { limit, page },
+      {
+        where: {
+          status: status,
+          title: search ? Like(`%${search}%`) : undefined,
+          description: search ? Like(`%${search}%`) : undefined,
+        },
       },
-    });
-
-    if (status) {
-      examples = examples.filter((Example) => Example.status === status);
-    }
-
-    if (search)
-      examples = examples.filter(
-        (example) =>
-          example.title.includes(search) ||
-          example.description.includes(search),
-      );
+    );
 
     return examples;
   }

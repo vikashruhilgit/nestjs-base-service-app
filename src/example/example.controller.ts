@@ -17,6 +17,7 @@ import { StatusDTO } from './dto/example-status.dto';
 import { ExampleIdDTO } from './dto/example-id.dto';
 import { PatchExampleDTO } from './dto/patch-example.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Paginated } from 'src/common/pagination/interface/paginated.interface';
 
 @Controller('task')
 @ApiTags('Example')
@@ -39,11 +40,11 @@ export class ExampleController {
     status: 200,
   })
   @Get()
-  findAll(@Query() filters: FilterExampleDTO): Promise<Example[]> {
-    if (Object.keys(filters).length > 0) {
-      return this.exampleService.findAllWithFilters(filters);
-    }
-    return this.exampleService.findAll();
+  findAll(@Query() filters: FilterExampleDTO): Promise<Paginated<Example>> {
+    // if (Object.keys(filters).length > 0) {
+    return this.exampleService.findAllWithFilters(filters);
+    // }
+    // return this.exampleService.findAll();
   }
 
   @Get('/:id')
