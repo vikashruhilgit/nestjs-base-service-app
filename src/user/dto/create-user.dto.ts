@@ -8,42 +8,61 @@
 
 import {
   IsArray,
+  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
+  MaxLength,
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { ExampleStatus } from '../example.model';
-import { NestedDetailDTO } from './nestedDetail.dto';
+import { UserStatus } from '../user.model';
+import { NestedDetail } from './nestedDetail.dto';
 import { Type } from 'class-transformer';
 
-export class CreateExampleDTO {
+export class CreateUserDTO {
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
-  title: string;
+  firstName: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  description: string;
+  @MinLength(3)
+  lastName?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/, {
+    message:
+      'Minimum eight characters, at least one letter, one number and one special character',
+  })
+  password: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @MaxLength(96)
+  email: string;
+
+  @IsEnum(UserStatus)
+  @IsOptional()
+  status?: UserStatus = UserStatus.IN_ACTIVE;
 
   /* Example to test nested */
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => NestedDetailDTO)
-  nestedDetail: NestedDetailDTO[];
-
-  @IsEnum(ExampleStatus)
-  status: ExampleStatus = ExampleStatus.OPEN;
+  @Type(() => NestedDetail)
+  addressDetail?: NestedDetail[];
 }
 
 /**
  * 
  * validator topical example  
- * // For Documenation refer url: https://docs.nestjs.com/openapi/types-and-parameters
+ * // For Documentation refer url: https://docs.nestjs.com/openapi/types-and-parameters
 import { postStatus } from '../enums/post-status.enum';
 import {
   IsArray,

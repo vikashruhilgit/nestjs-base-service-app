@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 
 // import { Type } from 'class-transformer';
 
-export class ExampleIdDTO {
+export class UserIdDTO {
   @ApiProperty({
     description: 'property description',
     example: randomUUID(),

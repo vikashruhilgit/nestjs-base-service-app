@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ExampleModule } from './example/example.module';
+import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { appConfig } from './config/app.config';
 import { databaseConfig } from './config/database.config';
 import { PaginationModule } from './common/pagination/pagination.module';
+import { AddressModule } from './address/address.module';
 import envValidation from './config/env.validation';
 
 const env = process.env.NODE_ENV;
@@ -33,9 +34,10 @@ const env = process.env.NODE_ENV;
         port: configService.get('database.port'),
       }),
     }),
-    ExampleModule,
+    UserModule,
     AuthModule,
     PaginationModule,
+    AddressModule,
   ],
   providers: [],
 })

@@ -21,40 +21,56 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
+  OneToMany,
+  // OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ExampleStatus } from './example.model';
-import { NestedDetailDTO } from './dto/nestedDetail.dto';
+import { UserStatus } from './user.model';
+import { Address } from '../address/address.entity';
 
 @Entity()
-export class Example {
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    unique: true,
+    type: 'varchar',
+    length: 96,
     nullable: false,
   })
-  title: string;
+  firstName: string;
 
-  @Column()
-  description: string;
+  @Column({
+    type: 'varchar',
+    length: 96,
+  })
+  lastName: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
+  password: string;
+
+  @Column({
+    type: 'varchar',
+    length: 96,
+    nullable: false,
+    unique: true,
+  })
+  email: string;
 
   @Column({
     type: 'enum',
-    enum: ExampleStatus,
+    enum: UserStatus,
     nullable: false,
-    default: ExampleStatus.OPEN,
+    default: UserStatus.IN_ACTIVE,
   })
-  status: ExampleStatus;
-
-  @Column({
-    type: 'json',
-    nullable: true,
-  })
-  nestedDetail: NestedDetailDTO[];
+  status: UserStatus;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -64,4 +80,10 @@ export class Example {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
+
+  @OneToMany(() => Address, (address) => address.user)
+  address: Address[];
 }

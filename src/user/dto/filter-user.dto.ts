@@ -7,22 +7,22 @@
 */
 
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
-import { ExampleStatus } from '../example.model';
+import { UserStatus } from '../user.model';
 import { ApiPropertyOptional, IntersectionType } from '@nestjs/swagger';
 import { PaginationQueryDTO } from 'src/common/pagination/dtos/pagination-query.dto';
 
-export class FilterExampleBaseDTO {
+class FilterUserBaseDTO {
   @ApiPropertyOptional({
-    description: 'status for filter',
+    description: 'User status for filter',
     example: '',
-    enum: ExampleStatus,
+    enum: UserStatus,
   })
   @IsOptional()
-  @IsEnum(ExampleStatus)
-  status?: ExampleStatus;
+  @IsEnum(UserStatus)
+  status?: UserStatus;
 
   @ApiPropertyOptional({
-    description: 'search term fir filter',
+    description: 'search term for user, first name or last name',
     example: '',
   })
   @IsOptional()
@@ -30,7 +30,7 @@ export class FilterExampleBaseDTO {
   search?: string;
 }
 
-export class FilterExampleDTO extends IntersectionType(
-  FilterExampleBaseDTO,
+export class FilterUserDTO extends IntersectionType(
+  FilterUserBaseDTO,
   PaginationQueryDTO,
 ) {}
