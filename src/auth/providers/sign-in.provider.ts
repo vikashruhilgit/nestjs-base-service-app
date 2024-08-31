@@ -1,8 +1,3 @@
-/**
- * JWT
- * https://jwt.io/
- */
-
 import {
   forwardRef,
   Inject,
@@ -10,13 +5,10 @@ import {
   RequestTimeoutException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { SignInDTO } from '../dtos/signin.dto';
 import { UserService } from 'src/user/providers/user.service';
 import { HashingProvider } from './hashing.provider';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigType } from '@nestjs/config';
-import { jwtConfig } from 'src/config/jwt.config';
-import { IActiveUser } from '../interface/active-user.interface';
+import { GenerateTokenProvider } from './generate-token.provider';
+import { SignInDTO } from '../dtos/sign-in.dto';
 
 @Injectable()
 export class SignInProvider {
@@ -33,15 +25,9 @@ export class SignInProvider {
     private readonly hashingProvider: HashingProvider,
 
     /**
-     * Inject jwt service
+     * Inject Generate token provider
      */
-    private readonly jwtService: JwtService,
-
-    /**
-     * Inject Jwt config
-     */
-    @Inject(jwtConfig.KEY)
-    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    private readonly generateTokenProvider: GenerateTokenProvider,
   ) {}
 
   async signIn(signInDTO: SignInDTO) {
@@ -57,23 +43,10 @@ export class SignInProvider {
       throw new RequestTimeoutException(error, "couldn't verify the password");
     }
 
-    if (isEqual) {
-      const assessToken = await this.jwtService.signAsync(
-        {
-          sub: user.id,
-          email: user.email,
-        } as IActiveUser,
-        {
-          audience: this.jwtConfiguration.tokenAudience,
-          issuer: this.jwtConfiguration.tokenIssuer,
-          secret: this.jwtConfiguration.secret,
-          expiresIn: this.jwtConfiguration.accessTokenTtl,
-        },
-      );
-
-      return { assessToken };
-    } else {
+    if (!isEqual) {
       throw new UnauthorizedException('Invalid Credentials');
     }
+
+    return await this.generateTokenProvider.generateToken(user);
   }
 }

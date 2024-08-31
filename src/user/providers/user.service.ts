@@ -8,16 +8,9 @@
  *  https://docs.nestjs.com/exception-filters#built-in-http-exceptions
  */
 
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO } from '../dto/create-user.dto';
 import { FilterUserDTO } from '../dto/filter-user.dto';
-import { AuthService } from '../../auth/providers/auth.service';
 import { Like, Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,11 +29,6 @@ import { FindUserByEmailProvider } from './find-user-by-email.provider';
 @Injectable()
 export class UserService {
   constructor(
-    /**
-     * Injecting auth service with circular dependency
-     */
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
     /**
      * Injecting example repository of type Example entity
      */
@@ -83,24 +71,21 @@ export class UserService {
   }
 
   async findAll(filters: FilterUserDTO) {
-    if (this.authService.isAuthenticated()) {
-      const { search, status, limit, page } = filters;
+    const { search, status, limit, page } = filters;
 
-      const examples = await this.paginationProvider.paginateQuery(
-        this.userRepository,
-        { limit, page },
-        {
-          where: {
-            status: status,
-            firstName: search ? Like(`%${search}%`) : undefined,
-            lastName: search ? Like(`%${search}%`) : undefined,
-          },
+    const examples = await this.paginationProvider.paginateQuery(
+      this.userRepository,
+      { limit, page },
+      {
+        where: {
+          status: status,
+          firstName: search ? Like(`%${search}%`) : undefined,
+          lastName: search ? Like(`%${search}%`) : undefined,
         },
-      );
+      },
+    );
 
-      return examples;
-    }
-    throw new UnauthorizedException('User in not authenticated');
+    return examples;
   }
 
   async findByID(id: string): Promise<User> {
