@@ -6,7 +6,7 @@
   Class-validator works on both browser and node.js platforms.
 */
 
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateAddressDTO {
   @IsNotEmpty()
@@ -20,8 +20,4 @@ export class CreateAddressDTO {
   @IsNotEmpty()
   @IsString()
   state: string;
-
-  @IsNotEmpty()
-  @IsUUID()
-  userId: string;
 }

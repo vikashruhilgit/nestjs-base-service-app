@@ -17,6 +17,8 @@ import { UserIdDTO } from './dto/user-id.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Paginated } from 'src/common/pagination/interface/paginated.interface';
 import { UserStatus } from './user.model';
+import { Auth } from 'src/auth/decorator/auth.decorator';
+import { AuthType } from 'src/auth/enum/auth-type.enum';
 
 @Controller('user')
 @ApiTags('User')
@@ -59,6 +61,7 @@ export class UserController {
   }
 
   @Post()
+  @Auth(AuthType.None)
   create(@Body() createUserDTO: CreateUserDTO): Promise<User> {
     return this.userService.create(createUserDTO);
   }

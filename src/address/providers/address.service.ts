@@ -24,10 +24,13 @@ export class AddressService {
     private readonly userService: UserService,
   ) {}
 
-  public async create(createAddressDTO: CreateAddressDTO): Promise<Address> {
+  public async create(
+    createAddressDTO: CreateAddressDTO,
+    userId: string,
+  ): Promise<Address> {
     let existingUser;
     try {
-      existingUser = await this.userService.findByID(createAddressDTO.userId);
+      existingUser = await this.userService.findByID(userId);
     } catch (error) {
       /**
        * Instead of this try saving the error and user/client application shouldn't know about this error.
