@@ -69,7 +69,6 @@ export class SignInProvider {
           expiresIn: this.jwtConfiguration.accessTokenTtl,
         },
       );
-      console.log('user', assessToken);
 
       return { assessToken };
     } else {

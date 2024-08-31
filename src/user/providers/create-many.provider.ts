@@ -20,8 +20,6 @@ export class CreateManyProvider {
    * basic example of transaction
    */
   async createMany(createUsersDTO: CreateUserDTO[]) {
-    console.log(createUsersDTO);
-
     const usersResult: User[] = [];
     // create query runner
     const queryRunner = this.dataSource.createQueryRunner();

@@ -8,6 +8,10 @@ import { databaseConfig } from './config/database.config';
 import { PaginationModule } from './common/pagination/pagination.module';
 import { AddressModule } from './address/address.module';
 import envValidation from './config/env.validation';
+import { jwtConfig } from './config/jwt.config';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './auth/guard/access-token/access-token.guard';
 
 const env = process.env.NODE_ENV;
 
@@ -34,11 +38,18 @@ const env = process.env.NODE_ENV;
         port: configService.get('database.port'),
       }),
     }),
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
     UserModule,
     AuthModule,
     PaginationModule,
     AddressModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AppModule {}
