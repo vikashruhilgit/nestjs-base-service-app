@@ -11,6 +11,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import { ConfigService } from '@nestjs/config';
+// import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -41,6 +43,13 @@ async function bootstrap() {
    */
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  // app.useGlobalInterceptors(new DataResponseInterceptor());
+
+  /**
+   * Get config service instance
+   */
+  // const configService = app.get(ConfigService);
 
   await app.listen(3000);
 }

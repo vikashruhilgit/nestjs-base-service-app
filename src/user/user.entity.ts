@@ -30,6 +30,7 @@ import {
 } from 'typeorm';
 import { UserStatus } from './user.model';
 import { Address } from '../address/address.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -49,6 +50,7 @@ export class User {
   })
   lastName: string;
 
+  @Exclude()
   @Column({
     type: 'varchar',
     length: 255,

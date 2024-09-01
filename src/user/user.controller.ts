@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Post,
   // Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './providers/user.service';
 import { User } from './user.entity';
@@ -62,6 +64,7 @@ export class UserController {
 
   @Post()
   @Auth(AuthType.None)
+  @UseInterceptors(ClassSerializerInterceptor)
   create(@Body() createUserDTO: CreateUserDTO): Promise<User> {
     return this.userService.create(createUserDTO);
   }

@@ -13,6 +13,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './auth/guard/authentication/authentication.guard';
 import { AccessTokenGuard } from './auth/guard/access-token/access-token.guard';
+import { UploadModule } from './upload/upload.module';
 
 const env = process.env.NODE_ENV;
 
@@ -45,6 +46,7 @@ const env = process.env.NODE_ENV;
     AuthModule,
     PaginationModule,
     AddressModule,
+    UploadModule,
   ],
   providers: [
     {

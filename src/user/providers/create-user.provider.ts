@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   RequestTimeoutException,
 } from '@nestjs/common';
@@ -19,8 +21,10 @@ export class CreateUserProvider {
     private readonly userRepository: Repository<User>,
 
     /**
+     * Injecting HashingProvider with circular dependency
      * Inject Hashing provider service
      */
+    @Inject(forwardRef(() => HashingProvider))
     private readonly hashingProvider: HashingProvider,
   ) {}
 
